@@ -1,9 +1,9 @@
 package by.home.edt.services.interfaces;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 
 public interface IFileReader {
 
-    File readFile(FileInputStream pathToFile);
+    List<String> readFile(FileInputStream pathToFile);
 }
