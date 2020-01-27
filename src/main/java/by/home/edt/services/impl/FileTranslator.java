@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,12 +50,12 @@ public class FileTranslator implements ITranslator {
                 dataOutputStream.close();
                 connection.disconnect();
             }
-            stringList.forEach(System.out::println);
+           return stringList;
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     private HttpsURLConnection getHttpsConnection(URL urlObj) throws IOException {
