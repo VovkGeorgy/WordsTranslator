@@ -18,7 +18,7 @@ public class DocFileReader implements IFileReader {
             XWPFWordExtractor extractor = new XWPFWordExtractor(document);
             final String textString = extractor.getText();
             return Arrays.stream(textString.substring(textString.indexOf('\n') + 1).split("\t"))
-                    .map(string -> string.replaceAll("\n","").trim())
+                    .map(string -> string.replaceAll("\n", "").trim())
                     .collect(Collectors.toList());
         } catch (Exception e) {
             System.out.println("ALARM!! EXCEPTION");

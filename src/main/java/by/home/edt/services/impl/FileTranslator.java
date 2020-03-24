@@ -16,18 +16,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FileTranslator implements ITranslator {
-    private final String urlWithKey = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200121T201816Z.d4ce0c5511a9cd0e.8a2d6acb4e3ceb7b9a7af39b372d875693f43118";
+    private final String URL_WITH_KEY = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200121T201816Z.d4ce0c5511a9cd0e.8a2d6acb4e3ceb7b9a7af39b372d875693f43118";
     private URL urlObj;
 
     public List<String> translate(List<String> stringList) {
 
         final List<String> wordsList = stringList.stream()
-                .map(string -> string.substring(string.indexOf('.') + 1, string.indexOf(" –")))
+                .map(string -> {
+                    return string.substring(string.indexOf('.') + 1, string.indexOf(" -"));
+                })
                 .map(String::trim)
                 .collect(Collectors.toList());
 
         try {
-            this.urlObj = new URL(urlWithKey);
+            this.urlObj = new URL(URL_WITH_KEY);
             for (int i = 0; i < wordsList.size(); i++) {
                 HttpsURLConnection connection = getHttpsConnection(this.urlObj);
 
@@ -50,7 +52,7 @@ public class FileTranslator implements ITranslator {
                 dataOutputStream.close();
                 connection.disconnect();
             }
-           return stringList;
+            return stringList;
 
         } catch (IOException ex) {
             ex.printStackTrace();

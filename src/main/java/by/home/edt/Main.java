@@ -4,24 +4,39 @@ import by.home.edt.classes.Words;
 import by.home.edt.services.impl.DocFileReader;
 import by.home.edt.services.impl.DocFileWriter;
 import by.home.edt.services.impl.FileTranslator;
-import by.home.edt.utils.FileUtils;
+import by.home.edt.utils.FileReadUtils;
+import by.home.edt.utils.PropertiesService;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Properties;
 
 public class Main {
-    private static final String inputFilePath = "D:\\Prog\\TEMP\\EDT\\inputDocHere\\The Wire 102.docx";
-    private static final String outputFilePath = "D:\\Prog\\TEMP\\EDT\\outputDocs\\The Wire 102 - out.docx";
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) throws FileNotFoundException {
         final DocFileReader docFileReader = new DocFileReader();
         final FileTranslator fileTranslator = new FileTranslator();
+        final DocFileWriter fileWriter = new DocFileWriter();
 
-        FileInputStream inputStream = FileUtils.getFileStream(inputFilePath);
+        final Properties props = PropertiesService.getProperties();
+        final String inputFolderPath = props.getProperty("input.folder.path");
+        final String outputFolderPath = props.getProperty("output.folder.path");
+        final String[] fileExtension = {props.getProperty("file.extension")};
+        final int maxReadFiles = Integer.parseInt(props.getProperty("max.read.files"));
+
+        final List<File> fileList = FileReadUtils.getFilesByExtensions(inputFolderPath, fileExtension, maxReadFiles);
+
+        final FileInputStream inputStream = new FileInputStream(fileList.get(0));
         final List<String> stringsWithNumbers = docFileReader.readFile(inputStream);
-        List<String> translatedStrings = fileTranslator.translate(stringsWithNumbers);
-        DocFileWriter fileWriter = new DocFileWriter();
-        Words words = new Words("Test title", translatedStrings);
-        fileWriter.writeFile(words, outputFilePath);
+
+        final List<String> translatedStrings = fileTranslator.translate(stringsWithNumbers);
+        final Words words = new Words("Test title", translatedStrings);
+
+        final String fileName = fileList.get(0).getName().replace(".docx", " - out.docx");
+        final String filePath = outputFolderPath + fileName;
+
+        fileWriter.writeFile(words, filePath);
     }
 }
