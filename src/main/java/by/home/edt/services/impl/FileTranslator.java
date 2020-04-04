@@ -22,9 +22,8 @@ public class FileTranslator implements ITranslator {
     public List<String> translate(List<String> stringList) {
 
         final List<String> wordsList = stringList.stream()
-                .map(string -> {
-                    return string.substring(string.indexOf('.') + 1, string.indexOf(" -"));
-                })
+                .filter(word -> !word.isEmpty())
+                .map(string -> string.substring(string.indexOf('.') + 1, string.indexOf(" -")))
                 .map(String::trim)
                 .collect(Collectors.toList());
 
