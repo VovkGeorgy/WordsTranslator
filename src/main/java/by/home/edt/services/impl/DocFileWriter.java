@@ -14,9 +14,11 @@ public class DocFileWriter implements IFileWriter {
 
     @Override
     public boolean writeFile(Words words, String path) {
-        try {
+        try (
+                FileOutputStream fileOutputStream = new FileOutputStream(new File(path));
+                XWPFDocument document = new XWPFDocument()
+        ) {
             System.out.println("Writing file....");
-            final XWPFDocument document = new XWPFDocument();
             final XWPFParagraph tmpParagraph = document.createParagraph();
             final XWPFRun tmpRun = tmpParagraph.createRun();
             tmpRun.setFontSize(13);
@@ -24,8 +26,7 @@ public class DocFileWriter implements IFileWriter {
                 tmpRun.setText(word);
                 tmpRun.addBreak();
             });
-            document.write(new FileOutputStream(new File(path)));
-            document.close();
+            document.write(fileOutputStream);
             System.out.println("File has been successfully written");
         } catch (IOException ex) {
             ex.printStackTrace();

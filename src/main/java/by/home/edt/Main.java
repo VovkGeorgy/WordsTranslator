@@ -9,13 +9,13 @@ import by.home.edt.utils.PropertiesService;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
 public class Main {
 
-    public static void main(final String[] args) throws FileNotFoundException {
+    public static void main(final String[] args) throws IOException {
         final DocFileReader docFileReader = new DocFileReader();
         final FileTranslator fileTranslator = new FileTranslator();
         final DocFileWriter fileWriter = new DocFileWriter();
@@ -28,13 +28,14 @@ public class Main {
 
         final List<File> fileList = FileReadUtils.getFilesByExtensions(inputFolderPath, fileExtension, maxReadFiles);
         for (File file : fileList) {
-            final FileInputStream inputStream = new FileInputStream(file);
-            final List<String> stringsWithNumbers = docFileReader.readFile(inputStream);
-
+            List<String> stringsWithNumbers;
+            try (FileInputStream inputStream = new FileInputStream(file)) {
+                stringsWithNumbers = docFileReader.readFile(inputStream);
+            }
             final List<String> translatedStrings = fileTranslator.translate(stringsWithNumbers);
             final Words words = new Words("Test title", translatedStrings);
 
-            final String fileName = fileList.get(0).getName().replace(".docx", " - out.docx");
+            final String fileName = file.getName().replace(".docx", " - out.docx");
             final String filePath = outputFolderPath + fileName;
 
             fileWriter.writeFile(words, filePath);
