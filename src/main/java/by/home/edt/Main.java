@@ -27,16 +27,17 @@ public class Main {
         final int maxReadFiles = Integer.parseInt(props.getProperty("max.read.files"));
 
         final List<File> fileList = FileReadUtils.getFilesByExtensions(inputFolderPath, fileExtension, maxReadFiles);
+        for (File file : fileList) {
+            final FileInputStream inputStream = new FileInputStream(file);
+            final List<String> stringsWithNumbers = docFileReader.readFile(inputStream);
 
-        final FileInputStream inputStream = new FileInputStream(fileList.get(0));
-        final List<String> stringsWithNumbers = docFileReader.readFile(inputStream);
+            final List<String> translatedStrings = fileTranslator.translate(stringsWithNumbers);
+            final Words words = new Words("Test title", translatedStrings);
 
-        final List<String> translatedStrings = fileTranslator.translate(stringsWithNumbers);
-        final Words words = new Words("Test title", translatedStrings);
+            final String fileName = fileList.get(0).getName().replace(".docx", " - out.docx");
+            final String filePath = outputFolderPath + fileName;
 
-        final String fileName = fileList.get(0).getName().replace(".docx", " - out.docx");
-        final String filePath = outputFolderPath + fileName;
-
-        fileWriter.writeFile(words, filePath);
+            fileWriter.writeFile(words, filePath);
+        }
     }
 }
