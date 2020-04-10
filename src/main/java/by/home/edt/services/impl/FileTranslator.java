@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public class FileTranslator implements ITranslator {
                 while ((inputLine = reader.readLine()) != null) {
                     int start = inputLine.indexOf("[");
                     int end = inputLine.indexOf("]");
-                    String translatedWord = inputLine.substring(start + 2, end - 1);
+                    String translatedWord = new String(inputLine.substring(start + 2, end - 1).getBytes(), StandardCharsets.UTF_8);
                     stringList.set(i, stringList.get(i).concat(" " + translatedWord));
                 }
                 reader.close();
