@@ -24,7 +24,7 @@ public class FileTranslator implements ITranslator {
 
         final List<String> wordsList = stringList.stream()
                 .filter(word -> !word.isEmpty())
-                .map(string -> string.substring(string.indexOf('.') + 1, string.indexOf(" -")))
+                .map(string -> string.substring(string.indexOf('.') + 1, string.contains(" -") ? string.indexOf(" -") : string.indexOf(" \u2013")))
                 .map(String::trim)
                 .collect(Collectors.toList());
 

@@ -28,6 +28,7 @@ public class Main {
 
         final List<File> fileList = FileReadUtils.getFilesByExtensions(inputFolderPath, fileExtension, maxReadFiles);
         for (File file : fileList) {
+            System.out.println("Reading file - " + file.getName());
             List<String> stringsWithNumbers;
             try (FileInputStream inputStream = new FileInputStream(file)) {
                 stringsWithNumbers = docFileReader.readFile(inputStream);
