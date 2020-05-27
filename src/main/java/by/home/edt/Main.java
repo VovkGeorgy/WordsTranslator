@@ -10,12 +10,13 @@ import by.home.edt.utils.PropertiesService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 public class Main {
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) {
         final DocFileReader docFileReader = new DocFileReader();
         final FileTranslator fileTranslator = new FileTranslator();
         final DocFileWriter fileWriter = new DocFileWriter();
@@ -29,9 +30,11 @@ public class Main {
         final List<File> fileList = FileReadUtils.getFilesByExtensions(inputFolderPath, fileExtension, maxReadFiles);
         for (File file : fileList) {
             System.out.println("Reading file - " + file.getName());
-            List<String> stringsWithNumbers;
+            List<String> stringsWithNumbers = new ArrayList<>();
             try (FileInputStream inputStream = new FileInputStream(file)) {
                 stringsWithNumbers = docFileReader.readFile(inputStream);
+            } catch (IOException e) {
+                System.out.println("Cant read file " + inputFolderPath);
             }
             final List<String> translatedStrings = fileTranslator.translate(stringsWithNumbers);
             final Words words = new Words("Test title", translatedStrings);
