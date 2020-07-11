@@ -24,7 +24,14 @@ public class FileTranslator implements ITranslator {
 
         final List<String> wordsList = stringList.stream()
                 .filter(word -> !word.isEmpty())
-                .map(string -> string.substring(string.indexOf('.') + 1, string.contains(" -") ? string.indexOf(" -") : string.indexOf(" \u2013")))
+                .map(string -> {
+                    try {
+                        return string.substring(string.indexOf('.') + 1, string.contains(" -") ? string.indexOf(" -") : string.indexOf(" \u2013"));
+                    } catch (StringIndexOutOfBoundsException exc) {
+                        System.out.println("Wrong syntax in the string - \" " + string + " \"");
+                    }
+                    return "";
+                })
                 .map(String::trim)
                 .collect(Collectors.toList());
 
